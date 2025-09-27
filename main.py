@@ -32,5 +32,17 @@ def create_employees_list(list_size: int) -> pd.DataFrame:
         print("Error while creating employees list:", e)
 
 
+def save_employees_list_on_s3(employees_df: pd.DataFrame):
+    try:
+        bucket = "prueba-global-mvm"
+        path = "data/employees.parquet"
+        s3_path = f"s3://{bucket}/{path}"
+        employees_df.to_parquet(s3_path, engine="pyarrow", index=False)
+        print("Archivo guardado en S3:", s3_path)
+    except Exception as e:
+        print("Error while saving employees.parquet on S3:", e)
+
+
 if __name__ == "__main__":
-    print(create_employees_list(25))
+    employees_df = create_employees_list(25)
+    save_employees_list_on_s3(employees_df)
